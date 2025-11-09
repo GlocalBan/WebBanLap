@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Check out</title>
+    <link rel="stylesheet" href="Checkout.css">
+    <script language="JavaScript" src="Checkout.js"></script>
+</head>
+<body>
+    <button onclick="openModal()">Thanh toán</button>
+    <form id="Checkout" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center;">Thông tin giao hàng</h2>
+            <!-- Chọn địa chỉ từ tài khoản -->
+            <h4><label for="savedAddress">Chọn địa chỉ từ tài khoản:</label>
+            <select id="savedAddress" onchange="fillAddress()">
+                <option value="">-- Nhập địa chỉ mới --</option>
+                <option value="addr1" 
+                        data-name="Nguyen Van A" 
+                        data-phone="0123456789" 
+                        data-adr="123 Đường ABC" 
+                        data-province="hanoi" 
+                        data-district="cầugiấy">
+                    Nguyễn Văn A - 123 Đường ABC, Cầu Giấy, Hà Nội
+                </option>
+                <option value="addr2" 
+                        data-name="Tran Thi B" 
+                        data-phone="0987654321" 
+                        data-adr="456 Đường XYZ" 
+                        data-province="hcm" 
+                        data-district="quận1">
+                    Trần Thị B - 456 Đường XYZ, Quận 1, TP.HCM
+                </option>
+            </select>
+            <br>Họ và tên khách hàng</br>
+            <input type="text" id="name">
+            <br>Số điện thoại</br>
+            <input type="text" id="phone">
+            <br>Địa chỉ</br>
+            <input type="text" id="adr" placeholder="-- Số nhà,tên đường --">
+            <label for="province">Tỉnh/Thành phố:</label>
+                <select id="province" onchange="updateDistricts()">
+                <option value="">-- Chọn tỉnh --</option>
+                <option value="hanoi">Hà Nội</option>
+                <option value="hcm">TP. Hồ Chí Minh</option>
+            </select>
+            <label for="district">Quận/Huyện:</label>
+            <select id="district">
+                <option value="">-- Chọn quận/huyện --</option>
+            </select>
+            <br>Ghi chú</br>
+            <textarea id="cmt" placeholder="-- Ghi chú đơn hàng --"></textarea> 
+        </div>
+        <div class="modal-content">
+            <h3 style="text-align: center;">Phương thức thanh toán</h3>
+            <div><input type="radio" name="pay" checked><h4>Thanh toán khi nhận hàng (COD)</h4></div>
+            <div><input type="radio" name="pay"><h4>Chuyển khoản ngân hàng</h4></div>
+            <div><input type="radio" name="pay"><h4>Ví điện tử</h4></div>
+            <h3 style="text-align: center;">Đơn hàng của bạn</h3>
+            ..... </br>
+            ...........</br>
+            ........
+            <h3>Tổng cộng</h3>
+            <button type="submit" onclick="handleClick(event)"> Hoàn tất đơn hàng</button>
+        </div>
+    </form>
+</body>
+</html>
