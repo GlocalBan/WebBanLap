@@ -452,3 +452,148 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// ========== CONNECT CARDS -> PRODUCT DETAIL ==========
+document.addEventListener('DOMContentLoaded', () => {
+  // helper: list of types we treat as "laptop" (có CPU/RAM/HDD/GPU)
+  const laptopTypes = ['Acer','Asus','Lenovo','HP','Dell','Laptop','lap'];
+
+  function isLaptop(type) {
+    if(!type) return false;
+    return laptopTypes.includes(type) || laptopTypes.includes(type.trim());
+  }
+
+  // Hàm parse description từ AdminProduct.js
+  function parseDescription(description) {
+    if (!description) return {};
+    
+    const specs = {};
+    const parts = description.split('|').map(p => p.trim());
+    
+    parts.forEach(part => {
+      if (part.includes('CPU:')) {
+        specs.cpu = part.replace('CPU:', '').trim();
+      } else if (part.includes('RAM:')) {
+        specs.ram = part.replace('RAM:', '').trim();
+      } else if (part.includes('Ổ cứng:')) {
+        specs.storage = part.replace('Ổ cứng:', '').trim();
+      } else if (part.includes('VGA:') || part.includes('Card đồ họa:')) {
+        specs.gpu = part.replace('VGA:', '').replace('Card đồ họa:', '').trim();
+      }
+    });
+    
+    return specs;
+  }
+
+  const detailSection = document.getElementById('productDetail');
+  const suggestions = document.getElementById('suggestions');
+  const accessories = document.getElementById('accessories');
+  const slider = document.querySelector('.slider');
+
+  const detailName = document.getElementById('detail-product-name');
+  const detailImg = document.getElementById('detail-product-img');
+  const detailInfo = document.getElementById('detail-product-info');
+  const detailPrice = document.getElementById('detail-product-price');
+
+  // spec elements inside detail
+  const specCPU = document.getElementById('spec-cpu');
+  const specRAM = document.getElementById('spec-ram');
+  const specStorage = document.getElementById('spec-storage');
+  const specGPU = document.getElementById('spec-gpu');
+
+  // attach click to every .btn-detail
+  document.querySelectorAll('.btn-detail').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      // tìm .card chứa nút
+      const card = btn.closest('.card');
+      if(!card) return;
+
+      // Lấy dữ liệu từ card
+      const nameEl = card.querySelector('.product-name');
+      const imgEl = card.querySelector('img.product-img');
+      const priceEl = card.querySelector('.product-price');
+      const type = card.getAttribute('data-type') || '';
+
+      const name = nameEl ? nameEl.textContent.trim() : '';
+      const imgSrc = imgEl ? imgEl.getAttribute('src') : '';
+      const price = priceEl ? priceEl.textContent.trim() : '';
+
+      // Fill vào productDetail
+      if(detailName) detailName.textContent = name;
+      if(detailImg) {
+        detailImg.setAttribute('src', imgSrc || '');
+        detailImg.setAttribute('alt', name || 'Product Image');
+      }
+      if(detailPrice) detailPrice.textContent = price;
+
+      // Tìm dữ liệu từ globalJsonData
+      let productData = null;
+      if(window.globalJsonData && window.globalJsonData.product && window.globalJsonData.product.brand) {
+        const brands = window.globalJsonData.product.brand;
+        
+        // Tìm trong tất cả brands
+        for(let brand of brands) {
+          // Tìm trong laptop
+          if(brand.laptop && Array.isArray(brand.laptop)) {
+            productData = brand.laptop.find(p => p.model === name);
+            if(productData) break;
+          }
+          // Tìm trong balo
+          if(!productData && brand.balo && Array.isArray(brand.balo)) {
+            productData = brand.balo.find(p => p.model === name);
+            if(productData) break;
+          }
+          // Tìm trong phukienkhac
+          if(!productData && brand.phukienkhac && Array.isArray(brand.phukienkhac)) {
+            productData = brand.phukienkhac.find(p => p.model === name);
+            if(productData) break;
+          }
+        }
+      }
+
+      if(isLaptop(type)) {
+        // Hiển thị spec CPU/RAM/Storage/GPU cho laptop
+        if(productData && productData.description) {
+          const specs = parseDescription(productData.description);
+          if(specCPU) specCPU.textContent = specs.cpu || '-';
+          if(specRAM) specRAM.textContent = specs.ram || '-';
+          if(specStorage) specStorage.textContent = specs.storage || '-';
+          if(specGPU) specGPU.textContent = specs.gpu || '-';
+          
+          // Cập nhật thông tin sản phẩm
+          if(detailInfo) detailInfo.textContent = productData.description.replace(/\|/g, '\n');
+        } else {
+          // Fallback nếu không tìm thấy data
+          if(specCPU) specCPU.textContent = '-';
+          if(specRAM) specRAM.textContent = '-';
+          if(specStorage) specStorage.textContent = '-';
+          if(specGPU) specGPU.textContent = '-';
+          if(detailInfo) detailInfo.textContent = 'Thông tin chi tiết đang được cập nhật...';
+        }
+      } else {
+        // Nếu không phải laptop (balo, phụ kiện khác) - hiển thị dấu -
+        if(specCPU) specCPU.textContent = '-';
+        if(specRAM) specRAM.textContent = '-';
+        if(specStorage) specStorage.textContent = '-';
+        if(specGPU) specGPU.textContent = '-';
+        
+        if(productData && productData.description) {
+          if(detailInfo) detailInfo.textContent = productData.description.replace(/\|/g, '\n');
+        } else {
+          if(detailInfo) detailInfo.textContent = `Loại: ${type}\nThông tin chi tiết đang được cập nhật...`;
+        }
+      }
+
+      // ẩn list & show detail
+      if(suggestions) suggestions.style.display = 'none';
+      if(accessories) accessories.style.display = 'none';
+      if(slider) slider.style.display = 'none';
+      if(detailSection) detailSection.style.display = 'block';
+
+      // Cuộn tới vị trí detail (mượt) thay vì lên đầu trang
+      detailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // ngăn hành vi default nếu là <a> (trong trường hợp)
+      if(e.preventDefault) e.preventDefault();
+    });
+  });
+});

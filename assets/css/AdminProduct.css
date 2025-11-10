@@ -21,7 +21,7 @@
     min-width: 0; /* Đảm bảo không bị overflow do content tối thiểu */
 }
 .table-container {
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     background-color: #E9F2F3;
 }
@@ -30,7 +30,7 @@
 .search-box {
     position: relative;
     width: 300px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .search-box input {
@@ -41,6 +41,7 @@
     border-radius: 25px;
     background-color: white;
     outline: none;
+    
 }
 
 .search-box i {
@@ -62,7 +63,7 @@
     min-width: 700px; 
     width: 100%;
     border-collapse: collapse;
-    height:65vh;
+    height:63vh;
     
 }
 .product-type-table thead,
@@ -317,7 +318,7 @@ input:checked + .slider:before {
 .pagination-container {
     display: flex;
     justify-content: center; /* Căn giữa */
-    margin-top: 20px;
+    margin-top: 5px;
     padding: 10px;
     
 }
@@ -347,7 +348,7 @@ input:checked + .slider:before {
     padding: 20px; 
     border-radius: 8px;
     background-color: #E9F2F3;
-    height:75vh;
+    
 }
 
 .sp-controls-row-top { 
@@ -380,9 +381,9 @@ input:checked + .slider:before {
 /* Bảng sản phẩm chi tiết sp-product-table */
 /* Thay đổi: Dùng wrapper mới để xử lý cuộn ngang */
 .sp-product-table-wrapper {
-    overflow-x: auto; 
-    /* Đảm bảo wrapper này chiếm 100% chiều rộng của .table-and-pagination-wrapper */
+    overflow-x: auto;
     width: 100%;
+    background:white;
 }
 
 .sp-product-table table {
